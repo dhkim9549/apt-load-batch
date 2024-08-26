@@ -5,15 +5,25 @@ import 'dotenv/config'
 const client = new MongoClient(process.env.MONGODB_URI);
 
 async function main() {
+  for(let y = 2006; y <= 2024; y++) {
+    console.log("y = " + y);
+    await main2({"year": y});
+  }
+}
+
+async function main2({year}) {
   await client.connect();
   console.log('Connected successfully to server');
-  const db = client.db('dbTest');
-  const collection = db.collection('aptTest');
+  const db = client.db('dbApt');
+  const collection = db.collection('cltAptTrd');
 
-  let msg = await collection.deleteMany({"ctrtYm": {"$regex": "20.*"}});
+  let msg = await collection.deleteMany({"ctrtYm": {"$regex": year + ".*"}});
   console.log("msg = " + JSON.stringify(msg));
 
-  const file = await open('/data/apt/apt-seoul-2024.csv');
+  const fileNm = `/data/apt/apt-seoul-${year}.csv`;
+  console.log("fileNm = " + fileNm);
+
+  const file = await open(fileNm);
   let i = 0;
   for await (const line of file.readLines()) {
     let s = new String(line);

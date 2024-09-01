@@ -14,32 +14,39 @@ async function main() {
   let i = 0;
   for await (const doc of
     db.collection('cltAptTrd')
-      .find()
+      .aggregate(
+        [
+          {
+            $group: { _id: ["$sggu", "$aptNm", "$area"] }
+          },
+          {
+            $sort: { _id : 1 }
+          }
+        ]
+      )
     ) {
 
-    let keyStr = doc.sggu + ' ' + doc.aptNm;
+    let [sggu, aptNm, area] = doc._id;
 
-    let aptInfo = await collection.findOne({keyStr: keyStr});
+    let aptInfo = await collection.findOne({sggu: sggu, aptNm: aptNm});
     if(aptInfo == null) {
       aptInfo = {};
-      aptInfo.keyStr = keyStr;
-      aptInfo.areas = [doc.area];
+      aptInfo.sgguAptNm = sggu + ' ' + aptNm;
+      aptInfo.sggu = sggu;
+      aptInfo.aptNm = aptNm;
+      aptInfo.areas = [area];
     } else {
-      if(!aptInfo.areas.includes(doc.area)) {
-        aptInfo.areas.push(doc.area);
+      if(!aptInfo.areas.includes(area)) {
+        aptInfo.areas.push(area);
+        aptInfo.areas.sort((a, b) => a - b);
       }
     }
 
-    await collection.updateOne({keyStr: keyStr}, {$set: aptInfo}, {upsert: true});
-
-
-
-
+    await collection.updateOne({sgguAptNm: aptInfo.sgguAptNm}, {$set: aptInfo}, {upsert: true});
 
     if(i % 1000 == 0) {
       console.log('i = ' + i);
       console.log({doc});
-      console.log({keyStr});
       console.log({aptInfo});
     }
 

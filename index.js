@@ -26,6 +26,10 @@ async function main2({year}) {
   const file = await open(fileNm);
   let i = 0;
   for await (const line of file.readLines()) {
+    if(line.startsWith('"NO"')) {
+      continue;
+    }
+
     let s = new String(line);
     s = line.substring(1, s.length - 1);
     s = s.replaceAll('","', '|');

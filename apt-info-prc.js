@@ -30,6 +30,7 @@ async function main() {
       aptInfo = {};
       aptInfo.sggu = sggu;
       aptInfo.aptNm = aptNm;
+      aptInfo.sgguAptNm = sggu + ' ' + aptNm;
     }
     aptInfo.prc = doc.prc;
     aptInfo.cnt = doc.cnt;

@@ -9,11 +9,11 @@ async function main() {
   await client.connect();
   console.log('Connected successfully to server');
   const db = client.db('dbApt');
-  const collection = db.collection('cltAptInfo');
+  const collection = db.collection('colAptInfo');
 
   let i = 0;
   for await (const doc of
-    db.collection('cltAptTrd').aggregate([
+    db.collection('colAptTrd').aggregate([
         {
           $group: { _id: ["$sggu", "$aptNm"], prc: { $sum: "$prc" }, cnt: { $sum: 1 } }
         },

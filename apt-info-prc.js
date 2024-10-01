@@ -15,13 +15,13 @@ async function main() {
   for await (const doc of
     db.collection('colAptTrd').aggregate([
         {
-          $group: { _id: ["$sggu", "$aptNm"], prc: { $sum: "$prc" }, cnt: { $sum: 1 } }
+          $group: { _id: ["$sggu", "$aptNm"], prc: { $sum: "$prc" }, maxCtrtDy: { $max: "$ctrtDy" }, cnt: { $sum: 1 } }
         },
         {
           $sort:{ prc : -1 }
-        },
+        }
       ])
-    ) {
+  ) {
 
     let [sggu, aptNm] = doc._id;
 
@@ -34,6 +34,7 @@ async function main() {
     }
     aptInfo.prc = doc.prc;
     aptInfo.cnt = doc.cnt;
+    aptInfo.maxCtrtDy = doc.maxCtrtDy;
 
     await collection.updateOne({sggu: sggu, aptNm: aptNm}, {$set: aptInfo}, {upsert: true});
 

@@ -2,24 +2,19 @@ import { open } from 'node:fs/promises';
 import { MongoClient } from 'mongodb'
 import 'dotenv/config'
 
-const client = new MongoClient(process.env.MONGODB_URI);
-await client.connect();
-console.log('Connected successfully to server');
-const db = client.db('dbApt');
-const collection = db.collection('colAptTrd');
-
 export async function insertTrd(fileNm) {
-
   await main(fileNm);
-}
-
-export function clientClose() {
-  client.close();
 }
 
 async function main(fileNm) {
 
   console.log("fileNm = " + fileNm);
+
+  const client = new MongoClient(process.env.MONGODB_URI);
+  await client.connect();
+  console.log('Connected successfully to server');
+  const db = client.db('dbApt');
+  const collection = db.collection('colAptTrd');
 
   const file = await open(fileNm);
   let i = 0;
@@ -59,6 +54,8 @@ async function main(fileNm) {
       console.log(new Date());
     }
   }
+
+  client.close();
 
   return 'done.';
 }

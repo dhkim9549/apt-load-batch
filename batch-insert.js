@@ -14,9 +14,9 @@ function convert(fileNm) {
   unlinkSync(srcDir + '/' + fileNm);
 }
 
-async function batchInsert() {
+async function batchInsertTrd() {
 
-  console.log('batchInsert() start...');
+  console.log('batchInsertTrd() start...');
 
   for(const file of readdirSync(srcDir)) {
     console.log(file);
@@ -24,11 +24,11 @@ async function batchInsert() {
     await insertTrd(dstDir + '/' + file);
   }
 
-  console.log('batchInsert() end...');
+  console.log('batchInsertTrd() end...');
 }
 
 async function main() {
-  await batchInsert();
+  await batchInsertTrd();
   await updateAptInfo();
   await updateAptInfoPrc();
 }
